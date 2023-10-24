@@ -1,6 +1,6 @@
 import requests
 i = 1
-Max = 151
+max = 151
 # URL's
 url = f"https://pokeapi.co/api/v2/pokemon/{i}/"
 url_legends = f"https://pokeapi.co/api/v2/pokemon-species/{i}/"

@@ -35,7 +35,7 @@ if jogar in resposta1:
         primeira_perg = int(input("Em que ano houve a primeira revolução industrial? "))
         if primeira_perg == 1760:
             print('Isso mesmo! A primeira evolução ocorreu em 1760 e terminou em 1840\n=====')
-            segunda_pergunta = int(input("Quantos anos você registrou no jogo? "))
+            segunda_pergunta = int(input("Qual idade você registrou no jogo? "))
             if segunda_pergunta == idade:
                 print("Correto! Aparentemente você não mentiu.\n=====")
                 ter_perg = int(input("Quantas letras tem seu apelido? "))

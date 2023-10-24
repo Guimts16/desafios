@@ -1,9 +1,9 @@
 import requests
-
-prg = input('Envie o ID ou Nome de um Pokemon: ')
+i = 1
+Max = 151
 # URL's
-url = f"https://pokeapi.co/api/v2/pokemon/{prg}/"
-url_legends = f"https://pokeapi.co/api/v2/pokemon-species/{prg}/"
+url = f"https://pokeapi.co/api/v2/pokemon/{i}/"
+url_legends = f"https://pokeapi.co/api/v2/pokemon-species/{i}/"
 # JSON's
 poke = requests.get(url)
 legend = requests.get(url_legends)
@@ -89,5 +89,8 @@ def Pokemon(start: int, end: int):
     if legend.status_code == 200:
         lege = legend.json()
         print(f"Lendario: {lege['is_legendary']}")
+
 # Incia a função
-Pokemon(1, 151)
+for i in max:
+   i += 1
+   Pokemon(1, 151)

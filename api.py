@@ -1,30 +1,30 @@
+
 import grequests
 import logging
+import threading
+
 
 logging.basicConfig(level=logging.INFO, format='- %(name)s - %(levelname)s - %(message)s')
 
-def pokemon(pokemon_id):
-    logger = logging.getLogger(f'Pokemon #{pokemon_id}')
+for i in range(1, 152):
 
-    url = f"https://pokeapi.co/api/v2/pokemon/{pokemon_id}/"
-    url_legends = f"https://pokeapi.co/api/v2/pokemon-species/{pokemon_id}/"
+    def pokemon_base():
+        logger = logging.getLogger(f'Pokemon #{i}')
+        url = f"https://pokeapi.co/api/v2/pokemon/{i}/"
+        url_legends = f"https://pokeapi.co/api/v2/pokemon-species/{i}/"
+        responses = grequests.map([grequests.get(url), grequests.get(url_legends)])
 
-    responses = grequests.map([grequests.get(url), grequests.get(url_legends)])
-
-    poke = responses[0]
-    legend = responses[1]
-
-    if poke.status_code == 200:
-        data = poke.json()
-        logger.info(f"ID: {data['id']}")
-        logger.info(f"Nome: {data['name']}")
-        logger.info(f"Altura: {data['height']}")
-        logger.info(f"Peso: {data['weight']}")
-        tipo_string = "Tipo: "
-        for tipo in data["types"]:
-            tipo_string += f"{tipo['type']['name']}/"
-        logger.info(tipo_string)
-
+        poke = responses[0]
+        if poke.status_code == 200:
+            data = poke.json()
+            logger.info(f"ID: {data['id']}")
+            logger.info(f"Nome: {data['name']}")
+            logger.info(f"Altura: {data['height']}")
+            logger.info(f"Peso: {data['weight']}")
+            tipo_string = "Tipo: "
+            for tipo in data["types"]:
+                tipo_string += f"{tipo['type']['name']}/"
+            logger.info(tipo_string)
         decrease_moves = data["moves"]
 
         if decrease_moves is not None:
@@ -61,34 +61,53 @@ def pokemon(pokemon_id):
                     poderes_string += f"{poderes}/"
                     moves_printed += 1
             logger.info(poderes_string)
+def vidas():
+    logger = logging.getLogger(f'Pokemon #{i}')
+    url = f"https://pokeapi.co/api/v2/pokemon/{i}/"
+    url_legends = f"https://pokeapi.co/api/v2/pokemon-species/{i}/"
+    responses = grequests.map([grequests.get(url), grequests.get(url_legends)])
+    poke = responses[0]
+    data = poke.json()
+    vida = data["stats"]
 
-        vida = data["stats"]
+    if vida is not None:
+        for life in vida:
+            live = life["stat"]["name"]
+            amor = life["base_stat"]
+            if live == "hp":
+                logger.info(f"{live}: {amor}")
 
-        if vida is not None:
-            for life in vida:
-                live = life["stat"]["name"]
-                amor = life["base_stat"]
-                if live == "hp":
-                    logger.info(f"{live}: {amor}")
+    if vida is not None:
+        for life in vida:
+            live = life["stat"]["name"]
+            amor = life["base_stat"]
+            if live == "attack":
+                logger.info(f"{live}: {amor}")
 
-        if vida is not None:
-            for life in vida:
-                live = life["stat"]["name"]
-                amor = life["base_stat"]
-                if live == "attack":
-                    logger.info(f"{live}: {amor}")
-
-        if vida is not None:
-            for life in vida:
-                live = life["stat"]["name"]
-                amor = life["base_stat"]
-                if live == "defense":
-                    logger.info(f"{live}: {amor}")
-
+    if vida is not None:
+        for life in vida:
+            live = life["stat"]["name"]
+            amor = life["base_stat"]
+            if live == "defense":
+                logger.info(f"{live}: {amor}")
+def leg():
+    logger = logging.getLogger(f'Pokemon #{i}')
+    url_legends = f"https://pokeapi.co/api/v2/pokemon-species/{i}/"
+    responses = grequests.map([grequests.get(url_legends)])
+    legend = responses[0]
     if legend.status_code == 200:
         lege = legend.json()
         logger.info(f"Lendario: {lege['is_legendary']}\n========")
 
-# Loop 
+
+    # Loop
 for i in range(1, 152):
-    pokemon(i)
+    ant = 0
+    pokemons = threading.Thread(target=pokemon_base())
+    pokemons.start()
+
+    life = threading.Thread(target=vidas)
+    life.start()
+
+    lag = threading.Thread(target=leg)
+    lag.start()

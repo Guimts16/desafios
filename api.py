@@ -1,34 +1,30 @@
-
-import grequests
+import requests
 import logging
-import threading
 
-
+logger = logging.getLogger('Pokemon')
 logging.basicConfig(level=logging.INFO, format='- %(name)s - %(levelname)s - %(message)s')
 
-for i in range(1, 152):
+def pokemon(i):
+    url = f"https://pokeapi.co/api/v2/pokemon/{i}/"
 
-    def pokemon_base():
-        logger = logging.getLogger(f'Pokemon #{i}')
-        url = f"https://pokeapi.co/api/v2/pokemon/{i}/"
-        url_legends = f"https://pokeapi.co/api/v2/pokemon-species/{i}/"
-        responses = grequests.map([grequests.get(url), grequests.get(url_legends)])
+    response = requests.get(url)
+    if response.status_code == 200:
+        data = response.json()
+        logger.info(f"Pokemon #{i}")
+        logger.info(f"ID: {data['id']}")
+        logger.info(f"Nome: {data['name']}")
+        logger.info(f"Altura: {data['height']}")
+        logger.info(f"Peso: {data['weight']}")
+        tipo_string = "Tipo: "
+        for tipo in data["types"]:
+            tipo_string += f"{tipo['type']['name']}/"
+        logger.info(tipo_string)
 
-        poke = responses[0]
-        if poke.status_code == 200:
-            data = poke.json()
-            logger.info(f"ID: {data['id']}")
-            logger.info(f"Nome: {data['name']}")
-            logger.info(f"Altura: {data['height']}")
-            logger.info(f"Peso: {data['weight']}")
-            tipo_string = "Tipo: "
-            for tipo in data["types"]:
-                tipo_string += f"{tipo['type']['name']}/"
-            logger.info(tipo_string)
         decrease_moves = data["moves"]
 
         if decrease_moves is not None:
-            ataques_string = "Ataques: "
+            ataques = []
+            poderes = []
             max_moves = 3
             moves_printed = 0
             for movim in decrease_moves:
@@ -36,78 +32,57 @@ for i in range(1, 152):
                     break
 
                 url_moves = movim["move"]["url"]
-                moves = grequests.map([grequests.get(url_moves)])[0]
-                poder = moves.json()
-                poderes = poder["power"]
-                if poderes is not None:
+                move_response = requests.get(url_moves)
+                if move_response.status_code == 200:
+                    poder = move_response.json()
                     move_name = movim["move"]["name"]
-                    ataques_string += f"{move_name} / "
-                    moves_printed += 1
-            logger.info(ataques_string)
+                    power = poder["power"]
+                    if power is not None:
+                        ataques.append(move_name)
+                        poderes.append(power)
+                        moves_printed += 1
 
-        if decrease_moves is not None:
-            poderes_string = "Poderes: "
-            max_moves = 3
-            moves_printed = 0
-            for movim in decrease_moves:
-                if moves_printed >= max_moves:
-                    break
+            logger.info("Ataques: " + " / ".join(ataques))
+            logger.info("Poderes: " + " / ".join(map(str, poderes)))
 
-                url_moves = movim["move"]["url"]
-                moves = grequests.map([grequests.get(url_moves)])[0]
-                poder = moves.json()
-                poderes = poder["power"]
-                if poderes is not None:
-                    poderes_string += f"{poderes}/"
-                    moves_printed += 1
-            logger.info(poderes_string)
-def vidas():
-    logger = logging.getLogger(f'Pokemon #{i}')
+def ststs(i):
     url = f"https://pokeapi.co/api/v2/pokemon/{i}/"
-    url_legends = f"https://pokeapi.co/api/v2/pokemon-species/{i}/"
-    responses = grequests.map([grequests.get(url), grequests.get(url_legends)])
-    poke = responses[0]
-    data = poke.json()
-    vida = data["stats"]
+    response = requests.get(url)
+    if response.status_code == 200:
+        data = response.json()
+        vida = data["stats"]
+        info = []
 
-    if vida is not None:
         for life in vida:
             live = life["stat"]["name"]
             amor = life["base_stat"]
             if live == "hp":
-                logger.info(f"{live}: {amor}")
+                info.append(f"HP: {amor}")
+            elif live == "attack":
+                info.append(f"Ataque: {amor}")
+            elif live == "defense":
+                info.append(f"Defesa: {amor}")
 
-    if vida is not None:
-        for life in vida:
-            live = life["stat"]["name"]
-            amor = life["base_stat"]
-            if live == "attack":
-                logger.info(f"{live}: {amor}")
+        for item in info:
+            logger.info(item)
 
-    if vida is not None:
-        for life in vida:
-            live = life["stat"]["name"]
-            amor = life["base_stat"]
-            if live == "defense":
-                logger.info(f"{live}: {amor}")
-def leg():
-    logger = logging.getLogger(f'Pokemon #{i}')
+def lendario(i):
     url_legends = f"https://pokeapi.co/api/v2/pokemon-species/{i}/"
-    responses = grequests.map([grequests.get(url_legends)])
-    legend = responses[0]
-    if legend.status_code == 200:
-        lege = legend.json()
-        logger.info(f"Lendario: {lege['is_legendary']}\n========")
+    response = requests.get(url_legends)
+    if response.status_code == 200:
+        data = response.json()
+        info = []
+        info.append(f"Lendario: {data['is_legendary']}")
+        info.append("========")
 
+        for item in info:
+            logger.info(item)
 
-    # Loop
-for i in range(1, 152):
-    ant = 0
-    pokemons = threading.Thread(target=pokemon_base())
-    pokemons.start()
+def main():
+    for i in range(1, 152):
+        pokemon(i)
+        ststs(i)
+        lendario(i)
 
-    life = threading.Thread(target=vidas)
-    life.start()
-
-    lag = threading.Thread(target=leg)
-    lag.start()
+if __name__ == "__main__":
+    main()

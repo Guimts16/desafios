@@ -7,8 +7,8 @@ conn = mysql.connector.connect(
     database="bot",
     auth_plugin='mysql_native_password'
 )
-print("Funções: Remover produto, Novo produto, Add, Remove, List, Dados")
-print(f"Obs: \nAdd: Adiciona nova quantidade de estoque.\nRemove: Retira uma quantidade do estoque.\nDados: Junta informação unitaria, para uma melhor visualização do produto.")
+print("Funções: Remover produto, Novo produto, Adicionar, Remove, List, Dados")
+print(f"Obs: \nAdicionar: Adiciona nova quantidade de estoque.\nRemove: Retira uma quantidade do estoque.\nDados: Junta informação unitaria, para uma melhor visualização do produto.")
 perg = input("Qual procedimento gostaria de ter agora? ").lower()
 
 def produ():
@@ -20,9 +20,9 @@ def produ():
         conn.commit()
         print("Adicionado com sucesso!")
 
-def add():
-    sql_a = f"SELECT * FROM wms.estoque where produtos = '{prg_item}'"
-    c = conn.cursor() 
+def Adicionar():
+    sql_a = f"SELECT * FROM wms.estoque where produtos = '{prg_itemAdicionar}'"
+    c = conn.cursor()
     c.execute(sql_a)
     r = c.fetchall()
 
@@ -34,15 +34,15 @@ def add():
     print()
 
     if prg_qtd > 0:
-        confimar = input(f"Você quer adicionar em {prg_item} {prg_qtd} novos produtos? (S/N) ").lower()
+        confimar = input(f"Você quer adicionar em {prg_itemAdicionar} {prg_qtd} novos produtos? (S/N) ").lower()
 
         if confimar == "s":
-            valor_add = prg_qtd + estq   
-            adi = f"update wms.estoque set quantidade = {valor_add} where produtos = '{prg_item}'"
+            valor_Adicionar = prg_qtd + estq   
+            adi = f"update wms.estoque set quantidade = {valor_Adicionar} where produtos = '{prg_itemAdicionar}'"
             c = conn.cursor() 
             c.execute(adi)
             conn.commit()
-            print(f"Certo! Estoque atualizado: {valor_add}")
+            print(f"Certo! Estoque atualizado para: {valor_Adicionar}")
 
         if confimar == "n":
             print("Pedido cancelado!")
@@ -76,13 +76,13 @@ def remove():
     
     qtd = int(r[0][3])
     valor = qtd - prg_rem
-    confimar = input(f"Você quer remover {prg_rem} de {prg_item}? (S/N) ").lower()
+    confimar = input(f"Você quer remover {prg_rem} de {prg_itemr}? (S/N) ").lower()
     if confimar == "s":
-        rem = f"update wms.estoque set quantidade = {valor} where produtos = '{prg_item}'"
+        rem = f"update wms.estoque set quantidade = {valor} where produtos = '{prg_itemr}'"
         c = conn.cursor() 
         c.execute(rem)
         conn.commit()
-        print(f"Certo! Estoque atualizado: {valor}")
+        print(f"Certo! Estoque atualizado para: {valor}")
 
     if confimar == "n":
         print("Pedido cancelado!")
@@ -102,14 +102,14 @@ if perg == "dados":
     prg_dados = input("Qual produto está procurando? ").lower()
     dados()
 
-if perg == "list" or "lista":
+if perg == "list":
     list()
 
-if perg == "add":
-    prg_item = input(f"Que item está procurando? ")
+if perg == "Adicionar":
+    prg_itemAdicionar = input(f"Que item está procurando? ")
     prg_qtd = int(input("Quantos produtos deseja adicionar? "))
     if prg_qtd > 0:
-        add()
+        Adicionar()
     else: 
         print("Você não pode adicionar números menores que zero.")
 
@@ -122,14 +122,14 @@ if perg == "novo produto":
     quantidade = int(input("Quantos produtos temos em estoque? "))
     produ()
 
-if perg == "remove" or "remover":
-    prg_item = input("Qual produto está procurando? ").lower()
+if perg == "remove":
+    prg_itemr = input("Qual produto está procurando? ").lower()
     prg_rem = int(input("Quantos quer remover? "))
     if prg_rem > 0:
         remove()
     else: 
         print("Você não pode remover números menores que zero.")
 
-funcoes = ["add", "list", "dados", "remove", "novo produto", "remover produto", "lista", "adicionar", "remover"]
+funcoes = ["Adicionar", "list", "dados", "remove", "novo produto", "remover produto", "lista", "adicionar", "remover"]
 if perg not in funcoes:
     print("Função não encontrada!")

@@ -59,7 +59,7 @@ def dados():
 
 def list():
     sql_l = f"Select * from wms.estoque"
-    c = conn.cursor() 
+    c = conn.cursor()
     c.execute(sql_l)
     r = c.fetchall()
     print("=== LISTA GERAL ===")

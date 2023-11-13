@@ -7,9 +7,8 @@ conn = mysql.connector.connect(
     database="bot",
     auth_plugin='mysql_native_password'
 )
-print("Funções: Remover produto, Novo produto, Adicionar, Remove, List, Dados")
-print(f"Obs: \nAdicionar: Adiciona nova quantidade de estoque.\nRemove: Retira uma quantidade do estoque.\nDados: Junta informação unitaria, para uma melhor visualização do produto.")
 perg = input("Qual procedimento gostaria de ter agora? ").lower()
+
 
 def produ():
     confimar = input(f"Você quer adicionar o produto '{produto}' na rua: '{rua}' com {quantidade} unidades? (S/N) ").lower()
@@ -19,6 +18,7 @@ def produ():
         c.execute(sql_p)
         conn.commit()
         print("Adicionado com sucesso!")
+
 
 def Adicionar():
     sql_a = f"SELECT * FROM wms.estoque where produtos = '{prg_itemAdicionar}'"
@@ -37,7 +37,7 @@ def Adicionar():
         confimar = input(f"Você quer adicionar em {prg_itemAdicionar} {prg_qtd} novos produtos? (S/N) ").lower()
 
         if confimar == "s":
-            valor_Adicionar = prg_qtd + estq   
+            valor_Adicionar = prg_qtd + estq
             adi = f"update wms.estoque set quantidade = {valor_Adicionar} where produtos = '{prg_itemAdicionar}'"
             c = conn.cursor() 
             c.execute(adi)
@@ -46,6 +46,7 @@ def Adicionar():
 
         if confimar == "n":
             print("Pedido cancelado!")
+
 
 def dados():
     sql_d = f"SELECT * FROM wms.estoque where produtos = '{prg_dados}'"
@@ -57,8 +58,9 @@ def dados():
     print(f"Rua: {r[0][2]}")
     print(f"Estoque: {r[0][3]}")
 
+
 def list():
-    sql_l = f"Select * from wms.estoque"
+    sql_l = "Select * from wms.estoque"
     c = conn.cursor()
     c.execute(sql_l)
     r = c.fetchall()
@@ -67,13 +69,14 @@ def list():
         for tupla in r:
             print(f"Item: {tupla[1]} / Rua: {tupla[2]} / Quantidade: {tupla[3]}")
 
+
 def remove():
     global conn
     sql_r = f"SELECT * FROM wms.estoque where produtos = '{prg_item}'"
     c = conn.cursor()
     c.execute(sql_r)
     r = c.fetchall()
-    
+
     qtd = int(r[0][3])
     valor = qtd - prg_rem
     confimar = input(f"Você quer remover {prg_rem} de {prg_itemr}? (S/N) ").lower()
@@ -87,6 +90,7 @@ def remove():
     if confimar == "n":
         print("Pedido cancelado!")
 
+
 def deletar():
     confirmar = input(f"Tem certeza que deseja deletar o produto '{produto}'? (S/N)").lower()
     if confirmar == "s":
@@ -97,6 +101,7 @@ def deletar():
         print("Produto deletado.")
     if confirmar == "n":
         print("Pedido cancelado!")
+
 
 if perg == "dados":
     prg_dados = input("Qual produto está procurando? ").lower()

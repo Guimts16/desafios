@@ -12,6 +12,7 @@ conn = mysql.connector.connect(
     auth_plugin='mysql_native_password'
 )
 
+
 def Adicionar():
     prg_itemAdicionar = item_entry.get()
     prg_qtd = int(quantity_entry.get())
@@ -43,8 +44,10 @@ def Adicionar():
                 messagebox.showinfo("Cancelado", "Pedido cancelado!")
         else:
             messagebox.showinfo("Erro", "Este produto não existe. Verifique-o na lista!")
+
+
 def list_products():
-    sql_l = f"Select * from wms.estoque"
+    sql_l = "Select * from wms.estoque"
     c = conn.cursor()
     c.execute(sql_l)
     r = c.fetchall()
@@ -64,58 +67,74 @@ def show_data():
         produto_data = "\n".join(f"ID: {row[0]}, Produto: {row[1]}, Quantidade: {row[3]}, Rua: {row[2]}\n" for row in r)
         messagebox.showinfo("Dados do Produto", produto_data)
     else:
-        messagebox.showinfo("Erro", "Este produto não existe.")
+        messagebox.showinfo("Erro", "Este produto não existe! Use o ID do produto.")
+
 
 def id_r(size=4, chars=string.ascii_uppercase + string.digits):
     return ''.join(choice(chars) for _ in range(size))
+
 
 def adicionar_produto():
     nome = item_entry.get()
     quantidade = quantity_entry.get()
     rua = rua_entry.get()
+    if nome != "":
+        confirmation = messagebox.askquestion("Confirmação", f"Você quer adicionar o produto {nome} com {quantidade} unidades na rua {rua}?")
 
-    confirmation = messagebox.askquestion("Confirmação", f"Você quer adicionar o produto {nome} com {quantidade} unidades na rua {rua}?")
-
-    if int(quantidade) > 0:
-        if confirmation == "yes":
-            add = f"insert into wms.estoque (id, produtos, rua, quantidade) values ('{id_r()}', '{nome}', '{rua}', '{quantidade}')"
-            c = conn.cursor()
-            c.execute(add)
-            conn.commit()
-            messagebox.showinfo("Sucesso", "Produto adicionado! Caso não tenha adicionado a rua, utilize o comando 'Atualizar' com o nome!")
+        if int(quantidade) > 0:
+            if confirmation == "yes":
+                add = f"insert into wms.estoque (id, produtos, rua, quantidade) values ('{id_r()}', '{nome}', '{rua}', '{quantidade}')"
+                c = conn.cursor()
+                c.execute(add)
+                conn.commit()
+                messagebox.showinfo("Sucesso", "Produto adicionado! Caso não tenha adicionado a rua, utilize o comando 'Atualizar' com o nome!")
+        else:
+            messagebox.showinfo("Erro", f"{quantidade} não é um número inteiro.")
     else:
-        messagebox.showinfo("Erro", f"{quantidade} não é um número inteiro.")
+        messagebox.showinfo("Erro", "Adicione um nome ao produto!")
+
 
 def atualizar():
-    nome = item_entry.get()
-    quantidade = int(quantity_entry.get())
-    rua = rua_entry.get()
-    sql = f"SELECT * FROM wms.estoque where id = '{nome}'"
-    c = conn.cursor()
-    c.execute(sql)
-    r = c.fetchall()
-    if r:
-        confirmation = messagebox.askquestion("Confirmação", f"Você deseja atualizar o produto {r[0][1]} com {quantidade} unidades na rua {rua}?")
 
-        if confirmation == "yes":
-            if rua:
-                rua = f"update wms.estoque set rua = '{rua}' where id = '{nome}'"
-                c = conn.cursor() 
-                c.execute(rua)
-                conn.commit()
+    nome = item_entry.get()
+    if nome != "":
+        quantidade = int(quantity_entry.get())
+        rua = rua_entry.get()
+        sql = f"SELECT * FROM wms.estoque where id = '{nome}'"
+        c = conn.cursor()
+        c.execute(sql)
+        r = c.fetchall()
+        if r:
+            if not (rua.upper().strip() in ["RUA", ""]):
+                confirmation = messagebox.askquestion("Confirmação", f"Você deseja atualizar o produto {r[0][1]} com {quantidade} unidades na rua {rua}?")
+
+                if confirmation == "yes":
+                    rua = f"update wms.estoque set rua = '{rua}' where id = '{nome}'"
+                    c = conn.cursor() 
+                    c.execute(rua)
+                    conn.commit()
+                if quantidade:
+                    qtdf = f"update wms.estoque set quantidade = {quantidade} where id = '{nome}'"
+                    c = conn.cursor()
+                    c.execute(qtdf)
+                    conn.commit()
             else:
-                messagebox.showinfo("Verificação", "Você não adicionou um endereço. Caso queria adicionar, repita o processo!")
-            if quantidade:
-                qtdf = f"update wms.estoque set quantidade = {quantidade} where id = '{nome}'"
-                c = conn.cursor()
-                c.execute(qtdf)
-                conn.commit()
-            messagebox.showinfo("Sucesso", "Alterado com sucesso.")
+                rua_atu = r[0][2]
+                confirmation = messagebox.askquestion("Confirmação", f"Você deseja atualizar o produto {r[0][1]} com {quantidade} unidades na rua {rua_atu}?")
+
+                if confirmation == "yes":
+                    qtdf = f"update wms.estoque set quantidade = {quantidade} where id = '{nome}'"
+                    c = conn.cursor()
+                    c.execute(qtdf)
+                    conn.commit()
+                messagebox.showinfo("Sucesso", "Alterado com sucesso.")
 
         else:
             messagebox.showinfo("Cancelado", "Atualização cancelada.")
     else:
-        messagebox.showinfo("Erro", "Produto inexistente, verifique a ortografia ou veja-o na lista.")
+        messagebox.showinfo("Erro", "Produto inexistente, verifique a ortografia ou se foi usado o ID corretamente.")
+
+
 def remover():
     prg_itemAdicionar = item_entry.get()
     prg_qtd = int(quantity_entry.get())
@@ -149,7 +168,6 @@ def remover():
             messagebox.showinfo("Erro", "Este produto não existe. Verifique-o na lista!")
 
 
-
 def apagar():
     prg_itemapagar = item_entry.get()
     if prg_itemapagar == "":
@@ -173,7 +191,8 @@ def apagar():
                 messagebox.showinfo("Cancelado", "Pedido cancelado!")
         else:
             messagebox.showinfo("Erro", "Este produto não existe. Verifique-o na lista!")
-            
+
+
 janela = tk.Tk()
 janela.title("Sistema de Gerenciamento de Estoque")
 janela.geometry("300x300")
@@ -190,13 +209,14 @@ quantity_label.pack()
 
 quantity_entry = tk.Entry(janela)
 quantity_entry.pack()
+quantity_entry.insert('1', string="10")
 
 rua_label = tk.Label(janela, text="Rua:")
 rua_label.pack()
 
 rua_entry = tk.Entry(janela)
 rua_entry.pack()
-
+rua_entry.insert('1', string="Rua")
 menu_button = tk.Menubutton(janela, text="Opções", relief="raised")
 menu_button.pack()
 

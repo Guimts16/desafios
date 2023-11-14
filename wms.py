@@ -1,140 +1,19 @@
-import mysql.connector
+from tkinter import *
 
-conn = mysql.connector.connect(
-    user="root",
-    password="3141592",
-    host="127.0.0.1",
-    database="bot",
-    auth_plugin='mysql_native_password'
-)
-perg = input("Qual procedimento gostaria de ter agora? ").lower()
+class MinhaGUI:
+    def __init__(self):
+    # Criando a janela principal
+        self.janela_principal = Tk()
+        
+        # Criando os frames
+        self.frame_cima = Frame(self.janela_principal, bg="white", height=70, width=400)
+        self.frame_baixo = Frame(self.janela_principal, bg='red', height=70, width=400)
+        
+        # Posicionando o frame
+        self.frame_cima.pack()
+        self.frame_baixo.pack()
 
+  # Fazer o Tkinter exibir o looping da janela
+    mainloop()
 
-def produ():
-    confimar = input(f"Você quer adicionar o produto '{produto}' na rua: '{rua}' com {quantidade} unidades? (S/N) ").lower()
-    if confimar == "s":
-        sql_p = f"insert into wms.estoque (produtos, rua, quantidade) values ('{produto}', '{rua}', {quantidade})"
-        c = conn.cursor() 
-        c.execute(sql_p)
-        conn.commit()
-        print("Adicionado com sucesso!")
-
-
-def Adicionar():
-    sql_a = f"SELECT * FROM wms.estoque where produtos = '{prg_itemAdicionar}'"
-    c = conn.cursor()
-    c.execute(sql_a)
-    r = c.fetchall()
-
-    estq = r[0][3]
-    print("===== ESTOQUE =====")
-    print(f"Item: {r[0][1]}")
-    print(f"Rua: {r[0][2]}")
-    print(f"Estoque: {r[0][3]}")
-    print()
-
-    if prg_qtd > 0:
-        confimar = input(f"Você quer adicionar em {prg_itemAdicionar} {prg_qtd} novos produtos? (S/N) ").lower()
-
-        if confimar == "s":
-            valor_Adicionar = prg_qtd + estq
-            adi = f"update wms.estoque set quantidade = {valor_Adicionar} where produtos = '{prg_itemAdicionar}'"
-            c = conn.cursor() 
-            c.execute(adi)
-            conn.commit()
-            print(f"Certo! Estoque atualizado para: {valor_Adicionar}")
-
-        if confimar == "n":
-            print("Pedido cancelado!")
-
-
-def dados():
-    sql_d = f"SELECT * FROM wms.estoque where produtos = '{prg_dados}'"
-    c = conn.cursor() 
-    c.execute(sql_d)
-    r = c.fetchall()
-    print("=== PRODUTO ===")
-    print(f"Item: {r[0][1]}")
-    print(f"Rua: {r[0][2]}")
-    print(f"Estoque: {r[0][3]}")
-
-
-def list():
-    sql_l = "Select * from wms.estoque"
-    c = conn.cursor()
-    c.execute(sql_l)
-    r = c.fetchall()
-    print("=== LISTA GERAL ===")
-    if len(r) > 0:
-        for tupla in r:
-            print(f"Item: {tupla[1]} / Rua: {tupla[2]} / Quantidade: {tupla[3]}")
-
-
-def remove():
-    global conn
-    sql_r = f"SELECT * FROM wms.estoque where produtos = '{prg_item}'"
-    c = conn.cursor()
-    c.execute(sql_r)
-    r = c.fetchall()
-
-    qtd = int(r[0][3])
-    valor = qtd - prg_rem
-    confimar = input(f"Você quer remover {prg_rem} de {prg_itemr}? (S/N) ").lower()
-    if confimar == "s":
-        rem = f"update wms.estoque set quantidade = {valor} where produtos = '{prg_itemr}'"
-        c = conn.cursor() 
-        c.execute(rem)
-        conn.commit()
-        print(f"Certo! Estoque atualizado para: {valor}")
-
-    if confimar == "n":
-        print("Pedido cancelado!")
-
-
-def deletar():
-    confirmar = input(f"Tem certeza que deseja deletar o produto '{produto}'? (S/N)").lower()
-    if confirmar == "s":
-        dele = f"delete from wms.estoque where produtos = '{produto}'"
-        c = conn.cursor() 
-        c.execute(dele)
-        conn.commit()
-        print("Produto deletado.")
-    if confirmar == "n":
-        print("Pedido cancelado!")
-
-
-if perg == "dados":
-    prg_dados = input("Qual produto está procurando? ").lower()
-    dados()
-
-if perg == "list":
-    list()
-
-if perg == "Adicionar":
-    prg_itemAdicionar = input(f"Que item está procurando? ")
-    prg_qtd = int(input("Quantos produtos deseja adicionar? "))
-    if prg_qtd > 0:
-        Adicionar()
-    else: 
-        print("Você não pode adicionar números menores que zero.")
-
-if perg == "remover produto":
-    produto = input("Que item quer remover? ")
-    deletar()
-if perg == "novo produto":
-    produto = input("Qual o nome desse produto? ")
-    rua = input("Onde ele se localiza? (Rua) ")
-    quantidade = int(input("Quantos produtos temos em estoque? "))
-    produ()
-
-if perg == "remove":
-    prg_itemr = input("Qual produto está procurando? ").lower()
-    prg_rem = int(input("Quantos quer remover? "))
-    if prg_rem > 0:
-        remove()
-    else: 
-        print("Você não pode remover números menores que zero.")
-
-funcoes = ["Adicionar", "list", "dados", "remove", "novo produto", "remover produto", "lista", "adicionar", "remover"]
-if perg not in funcoes:
-    print("Função não encontrada!")
+minha_gui = MinhaGUI()

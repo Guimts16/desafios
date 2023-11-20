@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 1em;
+			box-shadow: 0 0 1em black;
+            overflow: hidden;
+        }
+
+        section {
+            margin: 20px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        h2 {
+            color: #333;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 13px;
+            text-align: left;
+            transition: background-color 0.3s ease;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #ffff7a;
+        }
+
+        .dropdown {
+            float: right;
+            margin-top: 10px;
+        }
+
+        .dropdown select {
+            padding: 8px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            background-color: #333;
+            color: white;
+            cursor: pointer;
+        }
+
+    </style>
+    <title>Cronograma de Estudos</title>
+</head>
+
+<body>
+
+    <header>
+        <h1>Cronograma de Estudos</h1>
+        <div class="dropdown">
+            <label for="dia">Que dia é hoje?</label>
+            <select id="dia" onchange="showDay()">
+                <option value="todos">Todos</option>
+                <option value="segunda">Segunda-feira</option>
+                <option value="terca">Terça-feira</option>
+                <option value="quarta">Quarta-feira</option>
+                <option value="quinta">Quinta-feira</option>
+                <option value="sexta">Sexta-feira</option>
+                <option value="sabado">Sábado</option>
+                <option value="domingo">Domingo</option>
+            </select>
+        </div>
+    </header>
+
+    <section id="cronograma">
+    </section>
+
+    <script>
+        function showDay() {
+            var diaSelecionado = document.getElementById("dia").value;
+            var todasAsSecoes = document.querySelectorAll("section:not(#cronograma)");
+            
+            todasAsSecoes.forEach(function (secao) {
+                secao.style.display = "none";
+            });
+
+            if (diaSelecionado === "todos") {
+                todasAsSecoes.forEach(function (secao) {
+                    secao.style.display = "block";
+                });
+            } else {
+                var secaoDoDia = document.querySelector("#" + diaSelecionado);
+                if (secaoDoDia) {
+                    secaoDoDia.style.display = "block";
+                }
+            }
+        }
+        
+        showDay();
+    </script>
+    <section id="segunda">
+        <h2>Segunda-feira</h2>
+        <table>
+            <tr>
+                <th>Horário</th>
+                <th>Matéria</th>
+                <th>Atividade</th>
+            </tr>
+            <tr>
+                <td>17:00 - 18:00</td>
+                <td>História</td>
+                <td>Estudo</td>
+            </tr>
+            <tr>
+                <td>17:30 - 18:00</td>
+                <td>Geografia</td>
+                <td>Estudo</td>
+            </tr>
+        </table>
+    </section>
+
+    <section id="terca">
+        <h2>Terça-feira</h2>
+        <table>
+            <tr>
+                <th>Horário</th>
+                <th>Matéria</th>
+                <th>Atividade</th>
+            </tr>
+            <tr>
+                <td>17:00 - 18:00</td>
+                <td>Química</td>
+                <td>Estudo</td>
+            </tr>
+            <tr>
+                <td>17:30 - 18:00</td>
+                <td>Física</td>
+                <td>Estudo</td>
+            </tr>
+        </table>
+    </section>
+
+    <section id="quarta">
+        <h2>Quarta-feira</h2>
+        <table>
+            <tr>
+                <th>Horário</th>
+                <th>Matéria</th>
+                <th>Atividade</th>
+            </tr>
+            <tr>
+                <td>17:00 - 18:00</td>
+                <td>Filosofia</td>
+                <td>Estudo</td>
+            </tr>
+            <tr>
+                <td>17:30 - 18:00</td>
+                <td>Química</td>
+                <td>Estudo</td>
+            </tr>
+        </table>
+    </section>
+
+    <section id="quinta">
+        <h2>Quinta-feira</h2>
+        <table>
+            <tr>
+                <th>Horário</th>
+                <th>Matéria</th>
+                <th>Atividade</th>
+            </tr>
+            <tr>
+                <td>17:00 - 18:00</td>
+                <td>Inglês</td>
+                <td>Estudo</td>
+            </tr>
+            <tr>
+                <td>17:30 - 18:00</td>
+                <td>Mátematica</td>
+                <td>Estudo</td>
+            </tr>
+        </table>
+    </section>
+
+    <section id="sexta">
+        <h2>Sexta-feira</h2>
+        <table>
+            <tr>
+                <th>Horário</th>
+                <th>Matéria</th>
+                <th>Atividade</th>
+            </tr>
+            <tr>
+                <td>17:00 - 18:00</td>
+                <td>Biologia</td>
+                <td>Estudo</td>
+            </tr>
+            <tr>
+                <td>17:30 - 18:00</td>
+                <td>Sociologia</td>
+                <td>Estudo</td>
+            </tr>
+        </table>
+    </section>
+
+    <section id="sabado">
+        <h2>Sábado</h2>
+        <table>
+            <tr>
+                <th>Horário</th>
+                <th>Matéria</th>
+                <th>Atividade</th>
+            </tr>
+            <tr>
+                <td>16:00 - 17:30</td>
+                <td>Provas Antigas</td>
+                <td>Prática</td>
+            </tr>
+            <tr>
+                <td>13:00 - 14:00</td>
+                <td>Caligrafia</td>
+                <td>Prática</td>
+            </tr>
+        </table>
+    </section>
+
+    <section id="domingo">
+        <h2>Domingo</h2>
+        <table>
+            <tr>
+                <th>Horário</th>
+                <th>Matéria</th>
+                <th>Atividade</th>
+            </tr>
+            <tr>
+                <td>Descansinho!</td>
+                <td>-</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+            </tr>
+        </table>
+    </section>
+
+</body>
+</html>
